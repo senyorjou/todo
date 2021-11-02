@@ -7,7 +7,8 @@
   (t/testing "Parse expiration with a bad parameter"
     (t/is (nil? (cmds/parse-expiration "")))
     (t/is (nil? (cmds/parse-expiration "foo")))
-    (t/is (nil? (cmds/parse-expiration "1Q"))))
+    (with-redefs [cmds/error-and-exit (constantly "error and exit")]
+      (t/is (= "error and exit" (cmds/parse-expiration "1Q")))))
 
   (t/testing "Parse expiration with correct params"
     (let [now (java.time.LocalDateTime/now)
@@ -25,9 +26,18 @@
 (t/deftest add-todo-test
   (t/testing "Crate a full todo with no expiration"
     (t/is (= {:todo "Foo bar" :done false :expire nil}
-             (cmds/add-todo {:todo "Foo bar" :expire ""}))))
+             (cmds/add-todo {:todo "Foo bar" :expire ""})))
+    (t/is (= {:todo "Foo bar" :done false :expire nil}
+             (cmds/add-todo {:todo "Foo bar"})))
+    (t/is (= {:todo "Foo bar" :done false :expire nil}
+             (cmds/add-todo {:todo "Foo bar"}))))
 
   (t/testing "Crate a full todo with expiration"
     (let [now (java.time.LocalDateTime/now)
           todo (cmds/add-todo {:todo "Foo bar" :expire "1D"})]
      (t/is (.isBefore now (:expire todo))))))
+
+
+
+;; (with-redefs [exit-now! (constantly "we exit here")]
+;;     (is (= "we exit here" (code that calls exit))))
