@@ -25,19 +25,12 @@
 
 (t/deftest add-todo-test
   (t/testing "Crate a full todo with no expiration"
-    (t/is (= {:todo "Foo bar" :done false :expire nil}
-             (cmds/add-todo {:todo "Foo bar" :expire ""})))
-    (t/is (= {:todo "Foo bar" :done false :expire nil}
-             (cmds/add-todo {:todo "Foo bar"})))
-    (t/is (= {:todo "Foo bar" :done false :expire nil}
-             (cmds/add-todo {:todo "Foo bar"}))))
+    (let [expected {:todo "Foo bar" :done false :expire nil}]
+      (t/is (= (cmds/add-todo {:todo "Foo bar" :expire ""}) expected))
+      (t/is (= (cmds/add-todo {:todo "Foo bar" :expire nil}) expected))
+      (t/is (= (cmds/add-todo {:todo "Foo bar"}) expected))))
 
   (t/testing "Crate a full todo with expiration"
     (let [now (java.time.LocalDateTime/now)
           todo (cmds/add-todo {:todo "Foo bar" :expire "1D"})]
      (t/is (.isBefore now (:expire todo))))))
-
-
-
-;; (with-redefs [exit-now! (constantly "we exit here")]
-;;     (is (= "we exit here" (code that calls exit))))

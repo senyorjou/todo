@@ -11,6 +11,8 @@
   :profiles {:uberjar {:aot :all}
              :kaocha {:dependencies [[lambdaisland/kaocha "1.60.945"]]}}
   :aliases {"kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]}
-
+  :repositories [["cognitect-dev-tools" {:url"https://dev-tools.cognitect.com/maven/releases/"
+                                         :username :env
+                                         :password :env}]]
   :main ^:skip-aot todo.core
   :target-path "target/%s")
